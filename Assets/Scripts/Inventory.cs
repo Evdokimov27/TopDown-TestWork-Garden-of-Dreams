@@ -27,6 +27,8 @@ public class Inventory : MonoBehaviour
     bool Save = true;
     bool Load = false;
     public List<InventoryItem> items = new List<InventoryItem>();
+    private float timerDuration = 30f; // Длительность таймера в секундах
+    private float timer;
 
     public void Start()
     {
@@ -35,27 +37,34 @@ public class Inventory : MonoBehaviour
     }
     public void Update()
     {
+        Debug.Log(timer);
         if (Save && Load)
         {
-            StartCoroutine(SaveInventory("inventory.json"));
+            SaveInventory("inventory.json");
             Save = false;
         }
+        if (timer <= 0f)
+        {
+            Save = true;
+            StartTimer();
+        }
+        else timer -= Time.deltaTime;
     }
-	public IEnumerator SaveInventory(string fileName)
+	public void SaveInventory(string fileName)
     {
         Debug.Log("Save");
-
         InventoryData data = new InventoryData
         {
             itemsData = items
         };
-
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(fileName, json);
-        yield return new WaitForSeconds(30f);
-        Save = true;
     }
 
+    private void StartTimer()
+    {
+        timer = timerDuration;
+    }
 
     // Загрузить инвентарь из файла
     public void LoadInventory(string fileName)

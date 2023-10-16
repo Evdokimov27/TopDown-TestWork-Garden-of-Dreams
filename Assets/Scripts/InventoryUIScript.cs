@@ -50,8 +50,8 @@ public class InventoryUIScript : MonoBehaviour
 
         // диалоговое окно с кнопками "Подтвердить" и "Отменить"
         confirmationDialog.SetActive(true);
+        Debug.Log(inventory.items[selectedItemIndex].item.canDrop);
         canDropLabel.enabled = inventory.items[selectedItemIndex].item.canDrop;
-
     }
     public void ConfirmDelete()
     {
