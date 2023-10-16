@@ -33,7 +33,8 @@ public class InventoryUIScript : MonoBehaviour
             GameObject cell = Instantiate(cellPrefab, gridContainer);
             itemCells.Add(cell);
             cell.GetComponent<Image>().sprite = inventory.items[i].item.icon;
-            cell.transform.GetChild(0).GetComponent<TMP_Text>().text = inventory.items[i].quantity.ToString();
+            if (inventory.items[i].quantity > 1) cell.transform.GetChild(0).GetComponent<TMP_Text>().text = inventory.items[i].quantity.ToString();
+            else cell.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
 
             EventTrigger trigger = cell.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
