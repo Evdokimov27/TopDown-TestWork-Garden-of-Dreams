@@ -16,41 +16,38 @@ public class PlayerController : MonoBehaviour
     public Slider slider;
     public Image fill; // Заполняющая часть полоски здоровья
 
-    private Rigidbody2D rb;
+    private Vector3 movement;
 
     private void Start()
     {
         currentHealth = maxHealth;
         anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
     }
+
     public void SetHealth(float health)
     {
         slider.maxValue = maxHealth;
         slider.minValue = 0;
         slider.value = health;
     }
+
     private void Update()
     {
         SetHealth(currentHealth);
         float horizontalInput = joystick.Horizontal;
         float verticalInput = joystick.Vertical;
-        if ((horizontalInput != 0 || verticalInput != 0) && (horizontalInput > 0.5 || verticalInput > 0.5 || horizontalInput < -0.5 || verticalInput < -0.5))
+
+        if (Mathf.Abs(horizontalInput) > 0.5f || Mathf.Abs(verticalInput) > 0.5f)
         {
             anim.SetBool("Walk", true);
-            Vector2 movement = new Vector2(horizontalInput, verticalInput).normalized * moveSpeed;
-            rb.velocity = movement;
+            movement = new Vector3(horizontalInput, verticalInput, 0).normalized * moveSpeed * Time.deltaTime;
+            transform.Translate(movement);
         }
         else
         {
-            Vector2 movement = new Vector2(horizontalInput, verticalInput).normalized * 0;
-
-            rb.velocity = movement;
             anim.SetBool("Walk", false);
         }
-        
     }
-   
 
     public void ReceiveDamage(float damage)
     {
@@ -67,16 +64,18 @@ public class PlayerController : MonoBehaviour
             Die();
         }
     }
+
     void Die()
     {
         anim.SetTrigger("Death");
         this.gameObject.GetComponent<AimWithJoystick>().enabled = false;
         this.enabled = false;
-        ui.active = false;
-        deathScreen.active = true;
+        ui.SetActive(false);
+        deathScreen.SetActive(true);
     }
+
     public void Restart()
-	{
+    {
         SceneManager.LoadScene(0);
-	}
+    }
 }

@@ -7,21 +7,21 @@ using UnityEngine.UI;
 public class MonsterAI : MonoBehaviour
 {
     public Transform player;
-    public float chaseDistance; // Расстояние, на котором моб начнет преследование
-    public float attackDistance; // Расстояние для атаки
-    public float attackDelay; // Задержка между атаками
-    public int attackDamage; // Урон атаки
+    public float chaseDistance; // Р Р°СЃСЃС‚РѕСЏРЅРёРµ, РЅР° РєРѕС‚РѕСЂРѕРј РјРѕР± РЅР°С‡РЅРµС‚ РїСЂРµСЃР»РµРґРѕРІР°РЅРёРµ
+    public float attackDistance; // Р Р°СЃСЃС‚РѕСЏРЅРёРµ РґР»СЏ Р°С‚Р°РєРё
+    public float attackDelay; // Р—Р°РґРµСЂР¶РєР° РјРµР¶РґСѓ Р°С‚Р°РєР°РјРё
+    public int attackDamage; // РЈСЂРѕРЅ Р°С‚Р°РєРё
     public float distanceToPlayer;
-    public float moveSpeed; // Скорость движения 
-    public int maxHealth; // Текущее здоровье 
-    public int currentHealth; // Текущее здоровье 
+    public float moveSpeed; // РЎРєРѕСЂРѕСЃС‚СЊ РґРІРёР¶РµРЅРёСЏ 
+    public int maxHealth; // РўРµРєСѓС‰РµРµ Р·РґРѕСЂРѕРІСЊРµ 
+    public int currentHealth; // РўРµРєСѓС‰РµРµ Р·РґРѕСЂРѕРІСЊРµ 
     public NavMeshAgent navMeshAgent;
     public Animator animator;
     public bool isAlive = true;
     public GameObject DropItemForDeath;
 
     public Slider slider;
-    public Image fill; // Заполняющая часть полоски здоровья
+    public Image fill; // Р—Р°РїРѕР»РЅСЏСЋС‰Р°СЏ С‡Р°СЃС‚СЊ РїРѕР»РѕСЃРєРё Р·РґРѕСЂРѕРІСЊСЏ
 
     private bool isChasing = false;
     private bool hasAnimPlay = false;
@@ -79,7 +79,7 @@ public class MonsterAI : MonoBehaviour
             Vector3 moveDirection = navMeshAgent.velocity;
             if (moveDirection != Vector3.zero)
             {
-                // Если движение влево, размер по X на -1
+                // Р•СЃР»Рё РґРІРёР¶РµРЅРёРµ РІР»РµРІРѕ, СЂР°Р·РјРµСЂ РїРѕ X РЅР° -1
                 if (moveDirection.x < 0)
                 {
                     transform.localScale = new Vector3(-1f, 1f, 1f);
@@ -97,7 +97,7 @@ public class MonsterAI : MonoBehaviour
 
     public void DropItem(GameObject itemPrefab)
     {
-        float dropChance = 0.6f; // Вероятность выпадения предмета
+        float dropChance = 0.6f; // Р’РµСЂРѕСЏС‚РЅРѕСЃС‚СЊ РІС‹РїР°РґРµРЅРёСЏ РїСЂРµРґРјРµС‚Р°
         if (Random.value <= dropChance)
         {
             if (itemPrefab != null) Instantiate(itemPrefab, transform.position, Quaternion.identity);
@@ -121,22 +121,25 @@ public class MonsterAI : MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
-        // Отнимаем урон от текущего здоровья
+        // РћС‚РЅРёРјР°РµРј СѓСЂРѕРЅ РѕС‚ С‚РµРєСѓС‰РµРіРѕ Р·РґРѕСЂРѕРІСЊСЏ
         currentHealth -= damage;
 
-        // Проверяем, не умер ли монстр
+        // РџСЂРѕРІРµСЂСЏРµРј, РЅРµ СѓРјРµСЂ Р»Рё РјРѕРЅСЃС‚СЂ
         if (currentHealth <= 0)
         {
-            Die(); // Реализуйте логику смерти монстра
+            StartCoroutine(Die()); // Р РµР°Р»РёР·СѓР№С‚Рµ Р»РѕРіРёРєСѓ СЃРјРµСЂС‚Рё РјРѕРЅСЃС‚СЂР°
         }
     }
-    public void Die()
+    public IEnumerator Die()
 	{
         isAlive = false;
         animator.SetTrigger("Death");
         navMeshAgent.ResetPath();
         this.GetComponent<BoxCollider2D>().enabled = false;
         navMeshAgent.enabled = false;
+        this.GetComponent<Rigidbody2D>().simulated = false;
         DropItem(DropItemForDeath);
+        yield return new WaitForSeconds(5f);
+        Destroy(this.gameObject);
     }
 }

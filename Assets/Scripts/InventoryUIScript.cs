@@ -10,8 +10,8 @@ public class InventoryUIScript : MonoBehaviour
     public GameObject cellPrefab;
     public Transform gridContainer;
     public TMP_Text nameItem;
+    public TMP_Text canDropLabel;
     public List<GameObject> itemCells = new List<GameObject>();
-    public Button confirm;
     public GameObject confirmationDialog; // Ссылка на диалоговое окно подтверждения
 
 
@@ -50,6 +50,8 @@ public class InventoryUIScript : MonoBehaviour
 
         // диалоговое окно с кнопками "Подтвердить" и "Отменить"
         confirmationDialog.SetActive(true);
+        canDropLabel.enabled = inventory.items[selectedItemIndex].item.canDrop;
+
     }
     public void ConfirmDelete()
     {
@@ -57,7 +59,6 @@ public class InventoryUIScript : MonoBehaviour
         {
             Item item = inventory.items[selectedItemIndex].item;
             int quantity = inventory.items[selectedItemIndex].quantity;
-
             if (inventory.RemoveItem(item, quantity))
             {
                 Destroy(itemCells[selectedItemIndex]);
