@@ -25,11 +25,17 @@ public class Inventory : MonoBehaviour
     // Сохранить инвентарь в файл
     string fullPath = "inventory.json";
     bool Save = true;
+    bool Load = false;
     public List<InventoryItem> items = new List<InventoryItem>();
 
+    public void Start()
+    {
+        LoadInventory(fullPath);
+        Load = true;
+    }
     public void Update()
     {
-        if (Save)
+        if (Save && Load)
         {
             StartCoroutine(SaveInventory("inventory.json"));
             Save = false;
@@ -49,10 +55,7 @@ public class Inventory : MonoBehaviour
         yield return new WaitForSeconds(30f);
         Save = true;
     }
-	public void Start()
-	{
-        LoadInventory(fullPath);
-    }
+
 
     // Загрузить инвентарь из файла
     public void LoadInventory(string fileName)
